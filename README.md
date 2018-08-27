@@ -1,19 +1,10 @@
 # lazy
 Lazy is a generic asset lazy loader. Assets will load right before they scroll into the viewport. By default, Lazy will lazy load images, but it can also be configured to fire a generic callback whenever any element enters the viewport, making it useful for loading or animating practically any element or asset type. 
 
-## Install
-Lazy is an ES6 module. Consequently, you'll need an ES6 transpiler ([Babel](https://babeljs.io) is a nice one) and a module loader as part of your Javascript workflow.
-
-If you're already using the [JSPM package manager](http://jspm.io) for your project, you can install moduleLoader with the following command:
-
-```
-$ jspm install github:DEGJS/lazy
-```
-
 ## Usage
 Sample Javascript:
 ```js
-import lazy from "DEGJS/lazy";
+import lazy from "lazy.js";
 
 /* Instantiate Lazy, with options */
 const lazyOptions = {
@@ -70,7 +61,7 @@ Default: `null`
 
 ### .observe(els)
 Parameters: `els`  
-An element or array of elements to add begin observing.
+An element or array of elements to begin observing.
 
 ### .load(els)
 Parameters: `els`  
@@ -79,5 +70,3 @@ An element or array of elements to load immediately.
 ## Browser Support
 Lazy depends on the following browser APIs:
 + IntersectionObserver: [Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) | [Polyfill](https://github.com/w3c/IntersectionObserver) (Note: in legacy browsers that don't support IntersectionObserver, elements tagged for lazy loading will still be lazy loaded, but it will occur immediately on page load, rather than when they enter the viewport))
-
-To support legacy browsers, you'll need to include polyfills for the above APIs. 

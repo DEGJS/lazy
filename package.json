@@ -19,14 +19,6 @@
         "url": "https://github.com/DEGJS/lazy.git"
     },
     "bugs": "https://github.com/DEGJS/lazy/issues",
-    "jspm": {
-        "registry": "jspm",
-        "main": "lazy.js",
-        "format": "es6",
-        "directories": {
-            "lib": "src"
-        }
-    },
     "jest": {
         "testURL": "http://localhost"
     },

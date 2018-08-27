@@ -22,7 +22,7 @@ const lazy = (options = {}) => {
 
     const bindObserver = els => {
         observer = new IntersectionObserver(onIntersection, {
-            root: null,
+            root: settings.root,
             rootMargin: settings.rootMargin,
             threshold: settings.threshold
         });
