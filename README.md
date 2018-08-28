@@ -19,9 +19,9 @@ Sample Markup:
 ```html
 <img data-lazy data-src="https://placehold.it/1024x768" alt="Lazy loaded image using img element">
 
-<picture data-lazy>
-    <source data-srcset="https://placehold.it/1024x768" media="(min-width: 1000px)">
-    <img data-src="https://placehold.it/512x384" alt="Lazy loaded image using picture element">
+<picture>
+    <source data-lazy data-srcset="https://placehold.it/1024x768" media="(min-width: 1000px)">
+    <img data-lazy data-src="https://placehold.it/512x384" alt="Lazy loaded image using picture element">
 </picture>
 ```
 
