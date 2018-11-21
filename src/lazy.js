@@ -60,20 +60,20 @@ const lazy = (options = {}) => {
         if (els) {
             const elsArr = ensureArray(els);
             elsArr.forEach(el => {
-                if (settings.unbindAfterIntersect === true) {
-                    unbindObserver(el);
-                }
-                if (settings.onIntersectionCallback !== null) {
+                unbindObserver(el);
+                if (settings.onIntersectionCallback !== null && 
+                    initialIntersection === false) {
                     settings.onIntersectionCallback(el);
                 } else {
                     setElAttrs(el);
                 }
             });
+            initialIntersection = false;
         }
     };
 
     const unbindObserver = el => {
-        if (observer) {
+        if (observer && settings.unbindAfterIntersect === true) {
             observer.unobserve(el);
         }
     };
