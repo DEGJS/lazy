@@ -51,10 +51,21 @@ Type: `Number`
 Either a single number or an array of numbers which indicate at what percentage of the target's visibility the observer's callback should be executed. From the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_options).  
 Default: `0.1`
 
+### options.unbindAfterIntersect
+Type: `Boolean`   
+Determines if the observed elements should be unobserved after crossing their respective observation thresholds for the first time.  
+Default: `true`
+
 #### options.onIntersectionCallback
 Type: `Function`  
 Returns: `Element`  
 An optional callback that will override the default image-loading behavior, and simply return the observed element that has entered the viewport.  
+Default: `null`
+
+#### options.onNonIntersectionCallback
+Type: `Function`  
+Returns: `Element`  
+An optional callback that will return the observed element that has left the viewport.  
 Default: `null`
 
 ## Methods

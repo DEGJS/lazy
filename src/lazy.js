@@ -6,8 +6,11 @@ const lazy = (options = {}) => {
         root: null,
         rootMargin: '200px 0px',
         threshold: 0.1,
-        onIntersectionCallback: null
+        unbindAfterIntersect: true,
+        onIntersectionCallback: null,
+        onNonIntersectionCallback: null
     };
+    let initialIntersection = true;
     let observer = null;
     let settings;
     let els;
@@ -15,9 +18,7 @@ const lazy = (options = {}) => {
     const init = () => {
         settings = {...defaults, ...options};
         els = [...document.querySelectorAll(`${settings.elSelector}`)];
-        if (els.length > 0) {
-            intersectionObserverIsSupported() ? bindObserver(els) : load(els);
-        }
+        intersectionObserverIsSupported() ? bindObserver(els) : load(els);
     };
 
     const bindObserver = els => {
@@ -31,14 +32,24 @@ const lazy = (options = {}) => {
 
     const onIntersection = entries => {
         entries.forEach(entry => {
-            if (entry.intersectionRatio > 0) {
-                const el = entry.target;
+            const el = entry.target;
+            if (entry.isIntersecting) {
                 load(el);
+            } else {
+                onNonIntersection(el);
             }
         });
     };
 
-    const observe = els => {
+    const onNonIntersection = el => {
+        if (settings.onNonIntersectionCallback !== null && 
+            initialIntersection === false) {
+            settings.onNonIntersectionCallback(el);
+        }
+        initialIntersection = false;
+    };
+
+    const observe = (els = null) => {
         if (els && observer !== null) {
             const elsArr = ensureArray(els);
             elsArr.forEach(el => observer.observe(el));
@@ -56,11 +67,12 @@ const lazy = (options = {}) => {
                     setElAttrs(el);
                 }
             });
+            initialIntersection = false;
         }
     };
 
     const unbindObserver = el => {
-        if (observer) {
+        if (observer && settings.unbindAfterIntersect === true) {
             observer.unobserve(el);
         }
     };
