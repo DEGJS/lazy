@@ -51,6 +51,11 @@ Type: `Number`
 Either a single number or an array of numbers which indicate at what percentage of the target's visibility the observer's callback should be executed. From the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_options).  
 Default: `0.1`
 
+### options.unbindAfterIntersect
+Type: `Boolean`   
+Determines if the observed element should be unobserved after its crossing its observation threshold for the first time.  
+Default: `false`
+
 #### options.onIntersectionCallback
 Type: `Function`  
 Returns: `Element`  
