@@ -6,6 +6,7 @@ const lazy = (options = {}) => {
         root: null,
         rootMargin: '200px 0px',
         threshold: 0.1,
+        unbindAfterIntersect: true,
         onIntersectionCallback: null
     };
     let observer = null;
@@ -15,9 +16,7 @@ const lazy = (options = {}) => {
     const init = () => {
         settings = {...defaults, ...options};
         els = [...document.querySelectorAll(`${settings.elSelector}`)];
-        if (els.length > 0) {
-            intersectionObserverIsSupported() ? bindObserver(els) : load(els);
-        }
+        intersectionObserverIsSupported() ? bindObserver(els) : load(els);
     };
 
     const bindObserver = els => {
@@ -38,7 +37,7 @@ const lazy = (options = {}) => {
         });
     };
 
-    const observe = els => {
+    const observe = (els = null) => {
         if (els && observer !== null) {
             const elsArr = ensureArray(els);
             elsArr.forEach(el => observer.observe(el));
@@ -49,7 +48,9 @@ const lazy = (options = {}) => {
         if (els) {
             const elsArr = ensureArray(els);
             elsArr.forEach(el => {
-                unbindObserver(el);
+                if (settings.unbindAfterIntersect === true) {
+                    unbindObserver(el);
+                }
                 if (settings.onIntersectionCallback !== null) {
                     settings.onIntersectionCallback(el);
                 } else {
