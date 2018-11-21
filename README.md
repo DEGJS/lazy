@@ -53,7 +53,7 @@ Default: `0.1`
 
 ### options.unbindAfterIntersect
 Type: `Boolean`   
-Determines if the observed element should be unobserved after its crossing its observation threshold for the first time.  
+Determines if the observed element should be unobserved after crossing its observation threshold for the first time.  
 Default: `false`
 
 #### options.onIntersectionCallback
