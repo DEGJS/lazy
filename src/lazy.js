@@ -7,8 +7,10 @@ const lazy = (options = {}) => {
         rootMargin: '200px 0px',
         threshold: 0.1,
         unbindAfterIntersect: true,
-        onIntersectionCallback: null
+        onIntersectionCallback: null,
+        onNonIntersectionCallback: null
     };
+    let initialIntersection = true;
     let observer = null;
     let settings;
     let els;
@@ -30,11 +32,21 @@ const lazy = (options = {}) => {
 
     const onIntersection = entries => {
         entries.forEach(entry => {
-            if (entry.intersectionRatio > 0) {
-                const el = entry.target;
+            const el = entry.target;
+            if (entry.isIntersecting) {
                 load(el);
+            } else {
+                onNonIntersection(el);
             }
         });
+    };
+
+    const onNonIntersection = el => {
+        if (settings.onNonIntersectionCallback !== null && 
+            initialIntersection === false) {
+            settings.onNonIntersectionCallback(el);
+        }
+        initialIntersection = false;
     };
 
     const observe = (els = null) => {
