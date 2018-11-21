@@ -1,106 +1,87 @@
-const lazy = (options = {}) => {
+import {capitalize} from '../../../utils/stringUtils.js';
+import {getNextButtonAction} from '../../../utils/renderUtils.js';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {changeEligibility} from '../../actions/formActions.js';
+import Description from './description.js';
+import Field from './field.js';
+import ActionButtons from './actionButtons.js';
 
-    const defaults = {
-        elSelector: '[data-lazy]',
-        animationClass: null,
-        root: null,
-        rootMargin: '200px 0px',
-        threshold: 0.1,
-        unbindAfterIntersect: true,
-        onIntersectionCallback: null,
-        onNonIntersectionCallback: null
-    };
-    let initialIntersection = true;
-    let observer = null;
-    let settings;
-    let els;
-
-    const init = () => {
-        settings = {...defaults, ...options};
-        els = [...document.querySelectorAll(`${settings.elSelector}`)];
-        intersectionObserverIsSupported() ? bindObserver(els) : load(els);
-    };
-
-    const bindObserver = els => {
-        observer = new IntersectionObserver(onIntersection, {
-            root: settings.root,
-            rootMargin: settings.rootMargin,
-            threshold: settings.threshold
-        });
-        observe(els);
-    };
-
-    const onIntersection = entries => {
-        entries.forEach(entry => {
-            const el = entry.target;
-            if (entry.isIntersecting) {
-                load(el);
-            } else {
-                onNonIntersection(el);
-            }
-        });
-    };
-
-    const onNonIntersection = el => {
-        if (settings.onNonIntersectionCallback !== null && 
-            initialIntersection === false) {
-            settings.onNonIntersectionCallback(el);
-        }
-        initialIntersection = false;
-    };
-
-    const observe = (els = null) => {
-        if (els && observer !== null) {
-            const elsArr = ensureArray(els);
-            elsArr.forEach(el => observer.observe(el));
-        }
-    };
-
-    const load = els => {
-        if (els) {
-            const elsArr = ensureArray(els);
-            elsArr.forEach(el => {
-                unbindObserver(el);
-                if (settings.onIntersectionCallback !== null && 
-                    initialIntersection === false) {
-                    settings.onIntersectionCallback(el);
-                } else {
-                    setElAttrs(el);
-                }
-            });
-            initialIntersection = false;
-        }
-    };
-
-    const unbindObserver = el => {
-        if (observer && settings.unbindAfterIntersect === true) {
-            observer.unobserve(el);
-        }
-    };
-
-    const setElAttrs = el => {
-        if (settings.animationClass) {
-            el.classList.add(settings.animationClass);
-        }
-        if (el.dataset.src) {
-            el.src = el.dataset.src;
-        }
-        if (el.dataset.srcset) {
-            el.srcset = el.dataset.srcset;
-        }
-    };
-
-    const ensureArray = maybeArr => Array.isArray(maybeArr) ? maybeArr : [maybeArr];
-    
-    const intersectionObserverIsSupported = () => 'IntersectionObserver' in window;
-
-    init();
-
-    return {
-        observe,
-        load
-    };
-
+const nextButtonActionConfig = {
+    conditionalVals: [
+        'military',
+        'spouse',
+        'child'
+    ],
+    conditionalDestination: 'eligibilityDetails',
+    defaultDestination: 'policyHolder'
 };
 
-export default lazy;
+const mapDispatchToProps = dispatch => ({
+    changeEligibility: payload => dispatch(changeEligibility(payload))
+});
+
+class Eligibility extends Component {
+
+	constructor(props) {
+        super(props);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.state = {
+            nextButton: {
+                name: 'next',
+                action: getNextButtonAction(this.props.eligibilityStatus, nextButtonActionConfig)
+            }
+        };
+    }
+
+    componentDidMount() {
+        this.props.changeEligibility(this.props.eligibilityStatus);
+    }
+
+    handleInputChange({name, value}) {
+        this.props.changeEligibility(value);
+        this.setState({
+            nextButton: {
+                ...this.state.nextButton,
+                action: getNextButtonAction(value, nextButtonActionConfig)
+            }
+        });
+        this.props.handleInputChange({
+            name,
+            value
+        });
+    }
+	
+	render() {
+        const {
+            heading, 
+            description,
+            fields
+        } = this.props.section;
+
+        return (
+            <form
+                ref={form => this.formEl = form}
+                onSubmit={e => this.props.handleSubmit(e, this.formEl, this.state.nextButton.action)}
+                noValidate>
+                <div className="wrapper">
+                    <h1>{heading}</h1>
+                    <Description 
+                        description={description} />
+                    <Field 
+                        field={fields.eligibilityStatus}
+                        type='radio'
+                        modifierClass='field--large-radio'
+                        handleInputChange={this.handleInputChange} />
+                </div>
+                <ActionButtons 
+                    handleButtonClick={this.props.handleButtonClick}
+                    buttons={[
+                        this.state.nextButton
+                    ]} />
+            </form>
+        );
+	}
+}
+
+export default connect(null, mapDispatchToProps)(Eligibility);
